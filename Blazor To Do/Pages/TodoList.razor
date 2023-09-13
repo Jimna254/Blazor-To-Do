@@ -1,0 +1,110 @@
+﻿@page "/"
+
+<NavBar/>
+
+<div class="row">
+	<div class=" col-6">
+        @if (selectedToDO == null)
+        {
+            <AddTodo AddTodos="AddingToDO" EditTodos="EditToDo" />
+        }
+        else
+        {
+            <AddTodo EditToDoData="selectedToDO" EditTodos = "EditToDo" />
+        }
+
+    </div>
+
+    <div class=" col-6" style="display: grid; grid-template-columns: 1fr 1fr;" >
+        @if(toDoDTO.Count == 0)
+        {
+            <p>nothing found</p>
+        }
+        else
+        {
+            @foreach (var toDo in toDoDTO)
+            {
+                <DisplayToDo toDoDTO="toDo" DeleteId="DeleteToDo" onedittodo="EditToDo" />
+               @*
+                 <div>
+                    <div class="card-body">
+                        <h5 class="card-title">title</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@toDo.Title</h6>
+                        <p class="card-text">@toDo.Description</p>
+                        <p class="card-text">@toDo.Priority</p>
+                        <p class="card-text">@toDo.DateCreated</p>
+                        <button type="button"@onclick ="()=> EditTodo(toDo.Id)" class="btn btn-success">Edit</button>
+                        <button @onclick="()=>DeleteToDo(toDo.Id)" type="button" class="btn btn-danger">delete</button>
+
+
+                    </div>
+
+                </div>
+                *@
+            }
+            
+        }
+        
+        
+
+    </div>
+   
+
+   
+
+
+</div>
+@code {
+
+    private List<ToDoDTO> toDoDTO = new List<ToDoDTO>()
+    {
+        new ToDoDTO()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Learning React",
+            Priority = "Medium",
+         //   DateCreated = DateTime.Now,
+            Description = "Frontend"
+
+        },
+        new ToDoDTO()
+        {
+            Id = Guid.NewGuid(),
+            Title = "Learning React",
+            Priority = "Medium",
+         //   DateCreated = DateTime.Now,
+            Description = "Frontend"
+
+        }
+
+    };
+
+
+    public void AddingToDO(ToDoDTO toDo)
+    {
+        this.toDoDTO.Add(toDo);
+    }
+
+    public void DeleteToDo(Guid id)
+    {
+        try
+        {
+            var toDoDelete = this.toDoDTO.Find(x => x.Id == id);
+
+            this.toDoDTO.Remove(toDoDelete);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+
+    private ToDoDTO selectedToDO;
+    public void EditToDo(ToDoDTO toDo)
+    {
+        selectedToDO = toDo;
+
+    }
+
+}

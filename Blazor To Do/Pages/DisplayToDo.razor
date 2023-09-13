@@ -1,0 +1,44 @@
+﻿
+<div>
+    <div class="card-body">
+        <h5 class="card-title">title</h5>
+        <h6 class="card-subtitle mb-2 text-muted">@toDoDTO.Title</h6>
+        <p class="card-text">@toDoDTO.Description</p>
+        <p class="card-text">@toDoDTO.Priority</p>
+        <p class="card-text">@toDoDTO.DateCreated</p>
+        <button type="button" @onclick="(()=> EditTodo(toDoDTO))" class="btn btn-success">Edit</button>
+        <button @onclick="DeleteToDo" type="button" class="btn btn-danger">delete</button>
+
+
+    </div>
+
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public ToDoDTO toDoDTO { get; set; }
+
+
+    [Parameter]
+
+    public EventCallback<ToDoDTO> onedittodo { get; set; }
+
+    public async Task EditTodo(ToDoDTO editdto)
+    {
+        await onedittodo.InvokeAsync(editdto);
+
+    }
+
+
+    [Parameter]
+    public EventCallback<Guid> DeleteId{ get; set; }
+
+    public async Task DeleteToDo()
+    {
+        await DeleteId.InvokeAsync(toDoDTO.Id);
+    }
+
+}

@@ -1,0 +1,86 @@
+﻿
+<div class="form-group row input-form">
+    <label for="Title" class="col-sm-2 col-form-label">Title</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind-value="@newToDo.Title" id="Title" placeholder="Title">
+    </div>
+</div>
+
+<div class="form-group row input-form">
+    <label for="Description" class="col-sm-2 col-form-label">Description</label>
+    <div class="col-sm-10">
+        <input type="text" class="form-control" @bind="@newToDo.Description" id="Description" placeholder="Description">
+    </div>
+</div>
+<div class="form-group row input-form">
+    <label for="inputPassword" class="col-sm-2 col-form-label" >Priority</label>
+        <div class="col-sm-10">
+        <select class="form-control" @bind="@newToDo.Priority">
+        <option selected>Choose priority</option>
+        @foreach (var priority in Priorities)
+        {
+            <option value="@priority">@priority</option>
+        }
+    </select>
+</div>
+</div>
+<div class="form-group row input-form">
+    <label for="DateCreated" class="col-sm-2 col-form-label">DateCreated</label>
+    <div class="col-sm-10">
+        <input type="date" class="form-control" id="DateCreated" placeholder="DateCreated">
+    </div>
+</div>
+<button type="button" @onclick="@(IsEditing ? HandleEdit : HandleSubmit)" class="btn btn-primary">@(IsEditing ? "Edit" : "Add")</button>
+
+
+
+@code {
+    public ToDoDTO newToDo = new ToDoDTO()
+        {
+            Id = Guid.NewGuid()
+        };
+
+    [Parameter]
+    public EventCallback<ToDoDTO> AddTodos{ get; set; }
+
+    [Parameter]
+    public EventCallback<ToDoDTO> EditTodos { get; set; }
+
+
+    private bool IsEditing = false;
+    [Parameter]
+    public ToDoDTO EditToDoData
+    {
+        get => newToDo;
+        set
+        {
+            newToDo = value;
+            IsEditing = value != null;
+        }
+    }
+
+
+
+    private List<string> Priorities = new List<string>
+    {
+        "High",
+        "Low",
+        "Medium"
+
+    };
+
+    public async Task HandleSubmit()
+    {
+        //Here is to communicate with the parent
+        await AddTodos.InvokeAsync(newToDo);
+        newToDo = new ToDoDTO();
+    }
+
+    public async Task HandleEdit()
+    {
+        //Here is to communicate with the parent
+        await EditTodos.InvokeAsync(newToDo);
+        newToDo = new ToDoDTO();    
+    }
+
+}
